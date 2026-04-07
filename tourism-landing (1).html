@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TourPilot - Bold Tourism Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@600;700&family=Urbanist:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eaf5ef;
+      --panel: #f8fbf9;
+      --white: #ffffff;
+      --ink: #151a19;
+      --muted: #56635f;
+      --line: #dbe6e0;
+      --green: #1f8f58;
+      --green-dark: #126b3f;
+      --green-soft: #dff4e9;
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow: 0 24px 40px rgba(18, 40, 29, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background: #f8fbf9;
+      min-height: 100vh;
+      padding: 0;
+      animation: pageGlow 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes pageGlow {
+      0% { background-color: #f8fbf9; }
+      100% { background-color: #f3f8f5; }
+    }
+
+    .shell {
+      width: 100%;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: rgba(248, 251, 249, 0.95);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .panel {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .hero {
+      padding: 20px 20px 26px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 4px 8px 14px;
+      font-size: 0.82rem;
+      color: #22312b;
+      animation: topEnter 700ms ease both;
+    }
+
+    @keyframes topEnter {
+      from { opacity: 0; transform: translateY(-14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand {
+      font-family: "Syne", sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .nav {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-weight: 600;
+      flex-wrap: wrap;
+    }
+
+    .login-btn {
+      border: 0;
+      background: #1aa8a0;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .login-btn:hover {
+      background: #148882;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(26, 168, 160, 0.28);
+    }
+
+    .hero-image {
+      min-height: 460px;
+      border-radius: 18px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.18)),
+        url("https://images.unsplash.com/photo-1682687982501-1e58ab814714?auto=format&fit=crop&w=2200&q=80") center/cover;
+      position: relative;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .hero-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.14) 50%, transparent 80%);
+      transform: translateX(-120%);
+      animation: heroShine 6.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes heroShine {
+      0% { transform: translateX(-120%); }
+      45%, 100% { transform: translateX(140%); }
+    }
+
+    .hero-image h1 {
+      font-family: "Urbanist", sans-serif;
+      font-size: clamp(2rem, 5.3vw, 4rem);
+      font-weight: 300;
+      line-height: 0.98;
+      max-width: 12ch;
+      margin-bottom: 14px;
+      letter-spacing: -0.04em;
+      animation: fadeRise 900ms ease 120ms both;
+    }
+
+    .hero-image p {
+      max-width: 58ch;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.92);
+      margin-bottom: 16px;
+      font-size: 0.96rem;
+      animation: fadeRise 900ms ease 260ms both;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      animation: fadeRise 900ms ease 380ms both;
+    }
+
+    @keyframes fadeRise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tag {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      backdrop-filter: blur(3px);
+      animation: floatTag 4s ease-in-out infinite;
+    }
+
+    .tag:nth-child(2) { animation-delay: 250ms; }
+    .tag:nth-child(3) { animation-delay: 500ms; }
+
+    @keyframes floatTag {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .section {
+      padding: 38px 20px;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+    }
+
+    .section-soft {
+      background: linear-gradient(to bottom, rgba(223, 244, 233, 0.2), rgba(223, 244, 233, 0));
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #72807b;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+
+    .title {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
+      letter-spacing: -0.02em;
+      line-height: 1.12;
+    }
+
+    .view-btn {
+      text-decoration: none;
+      color: #fff;
+      background: var(--ink);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 9px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .view-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .view-btn span {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--green);
+      font-size: 0.8rem;
+      line-height: 1;
+    }
+
+    .tour-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .tour-card {
+      min-height: 190px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #f5f8f6;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      color: #fff;
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+    }
+
+    .tour-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 18px 28px rgba(0, 0, 0, 0.24);
+    }
+
+    .tour-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.08) 58%);
+      z-index: 0;
+    }
+
+    .tour-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tour-card h3 {
+      font-size: 0.97rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .tour-card p {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .t1 { background-image: url("https://images.unsplash.com/photo-1609895376430-45f5f9fa2912?auto=format&fit=crop&w=900&q=80"); }
+    .t2 { background-image: url("https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=900&q=80"); }
+    .t3 { background-image: url("https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=900&q=80"); }
+    .t4 { background-image: url("https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=900&q=80"); }
+
+    .story {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .story h2 {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(1.45rem, 2.8vw, 2rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .story p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+      max-width: 48ch;
+    }
+
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .thumb {
+      height: 82px;
+      border-radius: 10px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .thumb:nth-child(1) { background-image: url("https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=500&q=80"); }
+    .thumb:nth-child(2) { background-image: url("https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=500&q=80"); }
+    .thumb:nth-child(3) { background-image: url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=500&q=80"); }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 16px;
+    }
+
+    .tips-media {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .tips-photo {
+      border-radius: 14px;
+      min-height: 220px;
+      background: url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80") center/cover;
+    }
+
+    .phone {
+      border-radius: 20px;
+      min-height: 220px;
+      border: 3px solid #121918;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 64px;
+      height: 9px;
+      border-radius: 999px;
+      background: #121918;
+    }
+
+    .msg {
+      background: #121918;
+      color: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.74rem;
+      line-height: 1.35;
+      width: 90%;
+    }
+
+    .tips-copy h2 {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(1.45rem, 2.8vw, 2.2rem);
+      line-height: 1.15;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .tips-copy p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+
+    .checklist {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 0.9rem;
+      color: #32413c;
+    }
+
+    .checklist li::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      position: absolute;
+      left: 0;
+      top: 6px;
+    }
+
+    .testimonials {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .card {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+    }
+
+    .score {
+      font-family: "Syne", sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 4px;
+    }
+
+    .mini {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .quote {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #293632;
+      margin-bottom: 8px;
+    }
+
+    .guide-image {
+      margin-top: 18px;
+      min-height: 260px;
+      border-radius: 16px;
+      background: url("https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1700&q=80") center/cover;
+    }
+
+    .center-quote {
+      text-align: center;
+      max-width: 78ch;
+      margin: 14px auto 0;
+      color: #2e3a36;
+      line-height: 1.7;
+      font-size: 0.96rem;
+    }
+
+    .footer-strip {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .tiny {
+      height: 56px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .tiny:nth-child(1) { background-image: url("https://images.unsplash.com/photo-1473773508845-188df298d2d1?auto=format&fit=crop&w=300&q=80"); }
+    .tiny:nth-child(2) { background-image: url("https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=300&q=80"); }
+    .tiny:nth-child(3) { background-image: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=300&q=80"); }
+    .tiny:nth-child(4) { background-image: url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=300&q=80"); }
+    .tiny:nth-child(5) { background-image: url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=300&q=80"); }
+    .tiny:nth-child(6) { background-image: url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80"); }
+    .tiny:nth-child(7) { background-image: url("https://images.unsplash.com/photo-1458668383970-8ddd3927deed?auto=format&fit=crop&w=300&q=80"); }
+    .tiny:nth-child(8) { background-image: url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=300&q=80"); }
+
+    .reveal-target {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+
+    .reveal-target.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .login-modal {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(17, 26, 22, 0.58);
+      backdrop-filter: blur(3px);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .login-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .login-dialog {
+      width: min(440px, 100%);
+      background: #ffffff;
+      border: 1px solid #dce8e1;
+      border-radius: 18px;
+      box-shadow: 0 26px 45px rgba(16, 35, 26, 0.28);
+      padding: 20px;
+      transform: translateY(10px);
+      transition: transform 0.2s ease;
+    }
+
+    .login-modal.open .login-dialog {
+      transform: translateY(0);
+    }
+
+    .login-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .login-head h3 {
+      font-family: "Syne", sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .close-modal {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #dbe6df;
+      background: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #3f4d46;
+    }
+
+    .login-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .login-field {
+      margin-bottom: 10px;
+    }
+
+    .login-field label {
+      display: block;
+      font-size: 0.82rem;
+      color: #415049;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      border: 1px solid #cfded6;
+      border-radius: 10px;
+      background: #fff;
+      min-height: 42px;
+    }
+
+    .prefix {
+      padding: 0 11px;
+      color: #34423c;
+      font-weight: 700;
+      border-right: 1px solid #d8e4dd;
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .input-group input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      padding: 0 10px;
+      min-height: 42px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: #19231f;
+    }
+
+    .otp-field {
+      display: none;
+    }
+
+    .otp-field.active {
+      display: block;
+    }
+
+    .login-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .auth-btn {
+      border: 0;
+      border-radius: 10px;
+      min-height: 42px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .auth-primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .auth-secondary {
+      background: #eaf5ef;
+      color: #1d392a;
+    }
+
+    .auth-primary:disabled,
+    .auth-secondary:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .auth-status {
+      margin-top: 10px;
+      min-height: 18px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #3b4b43;
+    }
+
+    .auth-status.error {
+      color: #b42318;
+    }
+
+    .auth-status.success {
+      color: #1d7a47;
+    }
+
+    @media (max-width: 980px) {
+      .tour-row,
+      .story,
+      .tips-grid,
+      .testimonials {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-image {
+        min-height: 380px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 0;
+      }
+
+      .hero,
+      .section {
+        padding: 14px;
+      }
+
+      .hero-image {
+        min-height: 320px;
+        padding: 16px;
+      }
+
+      .title {
+        font-size: 1.35rem;
+      }
+
+      .view-btn {
+        font-size: 0.74rem;
+      }
+
+      .footer-strip {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .topbar {
+        font-size: 0.74rem;
+      }
+
+      .nav {
+        gap: 10px;
+      }
+
+      .login-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="topbar">
+        <p class="brand">TourPilot</p>
+        <p>Based in Ella Region</p>
+        <nav class="nav">
+          <span>Tours</span>
+          <span>About</span>
+          <span>Blog</span>
+          <span>Gallery</span>
+          <button class="login-btn" id="openLogin" type="button">Login</button>
+        </nav>
+      </div>
+
+      <div class="hero-image">
+        <h1>Explore the Best Natural Places</h1>
+        <p>We organize scenic tours, smooth transport, and guided routes to the most beautiful natural spots with clear schedules and simple booking flow.</p>
+        <div class="hero-tags">
+          <span class="tag">Private Trips</span>
+          <span class="tag">Transport Included</span>
+          <span class="tag">Custom Route</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Our Tours</span>
+          <h2 class="title">Find your perfect nature experience</h2>
+        </div>
+        <a class="view-btn" href="#">See All Tours <span>→</span></a>
+      </div>
+
+      <div class="tour-row">
+        <article class="tour-card t1">
+          <h3>Desert Journey</h3>
+          <p>$49 per person</p>
+        </article>
+        <article class="tour-card t2">
+          <h3>Sunset Ride</h3>
+          <p>$55 per person</p>
+        </article>
+        <article class="tour-card t3">
+          <h3>Scenic Hike Trail</h3>
+          <p>$39 per person</p>
+        </article>
+        <article class="tour-card t4">
+          <h3>Golden Evening</h3>
+          <p>$60 per person</p>
+        </article>
+      </div>
+
+      <div class="story">
+        <div>
+          <h2>With a love for nature and exploration, we create meaningful routes that stay in memory.</h2>
+          <p>TourPilot gives tourism teams one clean workspace for trip planning, guide assignment, payment tracking, and guest communication. The experience stays premium while operations stay simple.</p>
+        </div>
+        <div class="thumb-grid">
+          <div class="thumb"></div>
+          <div class="thumb"></div>
+          <div class="thumb"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft">
+      <div class="tips-grid">
+        <div class="tips-media">
+          <div class="tips-photo"></div>
+          <div class="phone">
+            <div class="msg">Weather alert: light rain at 6PM. Tour timeline adjusted automatically.</div>
+          </div>
+        </div>
+        <div class="tips-copy">
+          <span class="eyebrow">Ready</span>
+          <h2>Plan your visit with confidence, from weather tips to packing guides.</h2>
+          <p>We collect practical tips for first-time travelers and experienced explorers so every trip feels effortless.</p>
+          <ul class="checklist">
+            <li>Live weather and route updates</li>
+            <li>Packing recommendations by tour type</li>
+            <li>Private pickup options</li>
+          </ul>
+          <a class="view-btn" href="#">View Tours <span>→</span></a>
+        </div>
+      </div>
+
+      <div class="testimonials">
+        <article class="card">
+          <p class="eyebrow">Testimonials</p>
+          <h3 class="title" style="font-size:1.9rem;">What travelers say about our tours</h3>
+          <p class="score">4.9</p>
+          <p class="mini">Based on 280+ verified reviews</p>
+        </article>
+        <article class="card">
+          <p class="quote">Our guide knew every hidden spot and the desert timing was perfect. We never felt rushed and everything was smooth.</p>
+          <p class="mini">Rated 5/5 by returning travelers</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" style="border-bottom:0;">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">About Us</span>
+          <h2 class="title">Trusted Guides</h2>
+        </div>
+        <p class="mini" style="max-width:28ch; text-align:right;">We organize guided trips, scenic routes, and local experiences with reliable teams and clear schedules.</p>
+      </div>
+
+      <div class="guide-image"></div>
+      <p class="center-quote">Every traveler who joins us experiences the region through our eyes: calm mornings, glowing trails, and unforgettable horizons that stay in memory forever.</p>
+
+      <div class="footer-strip">
+        <div class="tiny"></div>
+        <div class="tiny"></div>
+        <div class="tiny"></div>
+        <div class="tiny"></div>
+        <div class="tiny"></div>
+        <div class="tiny"></div>
+        <div class="tiny"></div>
+        <div class="tiny"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="login-modal" id="loginModal" aria-hidden="true">
+    <div class="login-dialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <div class="login-head">
+        <h3 id="loginTitle">Login to TourPilot</h3>
+        <button class="close-modal" id="closeLogin" type="button" aria-label="Close login">×</button>
+      </div>
+      <p class="login-sub">Use your phone number and OTP as password to sign in.</p>
+
+      <form id="otpLoginForm" novalidate>
+        <div class="login-field">
+          <label for="loginPhone">Phone Number</label>
+          <div class="input-group">
+            <span class="prefix">+91</span>
+            <input id="loginPhone" type="tel" maxlength="10" inputmode="numeric" placeholder="10-digit phone number" autocomplete="tel" required>
+          </div>
+        </div>
+
+        <div class="login-field otp-field" id="otpField">
+          <label for="loginOtp">OTP Password</label>
+          <div class="input-group">
+            <input id="loginOtp" type="password" maxlength="6" inputmode="numeric" placeholder="Enter 6-digit OTP" autocomplete="one-time-code" required>
+          </div>
+        </div>
+
+        <div class="login-actions">
+          <button id="sendOtpBtn" class="auth-btn auth-secondary" type="button">Send OTP</button>
+          <button id="verifyBtn" class="auth-btn auth-primary" type="submit" disabled>Login</button>
+        </div>
+        <p id="authStatus" class="auth-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const openLoginBtn = document.getElementById("openLogin");
+    const closeLoginBtn = document.getElementById("closeLogin");
+    const loginModal = document.getElementById("loginModal");
+    const otpLoginForm = document.getElementById("otpLoginForm");
+    const loginPhone = document.getElementById("loginPhone");
+    const loginOtp = document.getElementById("loginOtp");
+    const otpField = document.getElementById("otpField");
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
+    const verifyBtn = document.getElementById("verifyBtn");
+    const authStatus = document.getElementById("authStatus");
+
+    const revealTargets = document.querySelectorAll(
+      ".section, .tour-card, .story > div, .tips-media, .tips-copy, .testimonials .card, .guide-image, .center-quote, .footer-strip .tiny"
+    );
+
+    revealTargets.forEach((element) => {
+      element.classList.add("reveal-target");
+    });
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("revealed");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    revealTargets.forEach((element) => {
+      revealObserver.observe(element);
+    });
+
+    let generatedOtp = "";
+
+    function digitsOnly(value) {
+      return value.replace(/\D/g, "");
+    }
+
+    function validPhone(value) {
+      return /^\d{10}$/.test(value);
+    }
+
+    function validOtp(value) {
+      return /^\d{6}$/.test(value);
+    }
+
+    function setAuthMessage(message, type) {
+      authStatus.textContent = message;
+      authStatus.className = "auth-status " + type;
+    }
+
+    function openLoginModal() {
+      loginModal.classList.add("open");
+      loginModal.setAttribute("aria-hidden", "false");
+      loginPhone.focus();
+    }
+
+    function closeLoginModal() {
+      loginModal.classList.remove("open");
+      loginModal.setAttribute("aria-hidden", "true");
+    }
+
+    openLoginBtn.addEventListener("click", openLoginModal);
+    closeLoginBtn.addEventListener("click", closeLoginModal);
+
+    loginModal.addEventListener("click", (event) => {
+      if (event.target === loginModal) {
+        closeLoginModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && loginModal.classList.contains("open")) {
+        closeLoginModal();
+      }
+    });
+
+    sendOtpBtn.addEventListener("click", () => {
+      const phone = digitsOnly(loginPhone.value);
+      loginPhone.value = phone;
+
+      if (!validPhone(phone)) {
+        setAuthMessage("Please enter a valid 10-digit phone number.", "error");
+        return;
+      }
+
+      generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+      otpField.classList.add("active");
+      verifyBtn.disabled = false;
+      loginOtp.focus();
+      setAuthMessage("OTP sent. Demo OTP: " + generatedOtp, "success");
+    });
+
+    otpLoginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const phone = digitsOnly(loginPhone.value);
+      const otp = digitsOnly(loginOtp.value);
+      loginPhone.value = phone;
+      loginOtp.value = otp;
+
+      if (!validPhone(phone)) {
+        setAuthMessage("Please enter a valid 10-digit phone number.", "error");
+        return;
+      }
+
+      if (!validOtp(otp)) {
+        setAuthMessage("Please enter a valid 6-digit OTP password.", "error");
+        return;
+      }
+
+      if (generatedOtp === "") {
+        setAuthMessage("Please click Send OTP first.", "error");
+        return;
+      }
+
+      if (otp !== generatedOtp) {
+        setAuthMessage("Incorrect OTP. Try again.", "error");
+        return;
+      }
+
+      setAuthMessage("Login successful. Welcome back!", "success");
+      setTimeout(() => {
+        otpLoginForm.reset();
+        otpField.classList.remove("active");
+        verifyBtn.disabled = true;
+        generatedOtp = "";
+        closeLoginModal();
+        window.location.href = "agentdashboard.html";
+      }, 700);
+    });
+  </script>
+</body>
+</html>

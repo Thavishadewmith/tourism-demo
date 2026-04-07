@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Dashboard - TourPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f8f6;
+      --white: #ffffff;
+      --ink: #111a17;
+      --muted: #5c6b65;
+      --line: #d7e2dc;
+      --green: #1f8f58;
+      --green-dark: #156a41;
+      --green-soft: #e4f5ec;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow: 0 14px 28px rgba(15, 39, 29, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .dashboard {
+      width: 100%;
+      min-height: 100vh;
+      margin: 0;
+      background: var(--white);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .topbar {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-family: "Syne", sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand span {
+      color: var(--green);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      min-height: 38px;
+      padding: 0 16px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--green-dark);
+    }
+
+    .btn-ghost {
+      background: #eef3f1;
+      color: #20312a;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #20312a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .icon-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .tabs {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 20px;
+      min-height: 58px;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      background: #ffffff;
+    }
+
+    .tab-btn {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #4b5563;
+      min-height: 58px;
+      padding: 0 16px;
+      margin-right: 2px;
+      font-family: inherit;
+      font-size: 0.87rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: #1f2937;
+      background: #f8fafc;
+    }
+
+    .tab-btn.active {
+      color: var(--green-dark);
+      background: #f4faf7;
+    }
+
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 0;
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      background: var(--green);
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 200ms ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-head {
+      margin-bottom: 16px;
+    }
+
+    .panel-head h2 {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .panel-head p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      padding: 14px;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: #2a3a34;
+    }
+
+    .value {
+      font-family: "Syne", sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .tour-item {
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tour-item:hover {
+      border-color: #b9d4c4;
+      box-shadow: 0 6px 14px rgba(15, 39, 29, 0.08);
+    }
+
+    .tour-detail {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .tour-detail h3 {
+      font-size: 1.02rem;
+      margin-bottom: 8px;
+      color: #1f2937;
+    }
+
+    .tour-day {
+      border: 1px solid #e8efeb;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      background: #fbfdfc;
+    }
+
+    .tour-day:last-child {
+      margin-bottom: 0;
+    }
+
+    .tour-day h4 {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+
+    .tour-day ul {
+      list-style: none;
+      display: grid;
+      gap: 4px;
+      margin: 0;
+      padding: 0;
+      font-size: 0.86rem;
+      color: #1f2937;
+    }
+
+    .status {
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ok { background: #e7f7ee; color: #156a41; }
+    .warn { background: #fff3df; color: #8b5e00; }
+    .late { background: #fde8e8; color: #9b1c1c; }
+
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .table-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .tools-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tools-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .group-btn {
+      min-height: 36px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--green);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+
+    .group-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .group-status {
+      font-size: 0.82rem;
+      color: var(--muted);
+      min-height: 16px;
+    }
+
+    .group-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .group-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .group-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .group-card h4 {
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+      color: #1f2937;
+    }
+
+    .group-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .group-detail {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .group-detail h3 {
+      font-size: 1.02rem;
+      margin-bottom: 10px;
+      color: #1f2937;
+    }
+
+    .table-filter {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: #1f2937;
+      font-family: inherit;
+      font-size: 0.86rem;
+      padding: 0 10px;
+      outline: 0;
+    }
+
+    .table-filter:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(31, 143, 88, 0.12);
+    }
+
+    .tick-col {
+      width: 44px;
+      text-align: center;
+    }
+
+    .tick-input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+
+    .hotel-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .hotel-table th,
+    .hotel-table td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    .hotel-table thead th {
+      background: #f8fafc;
+      color: #334155;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .hotel-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .empty-text {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .hotel-modal {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(7, 14, 28, 0.58);
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 40;
+    }
+
+    .hotel-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .group-modal {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(7, 14, 28, 0.58);
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 41;
+    }
+
+    .group-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .group-dialog {
+      width: min(440px, 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--white);
+      box-shadow: 0 22px 40px rgba(8, 20, 45, 0.24);
+      padding: 18px;
+      transform: translateY(10px);
+      transition: transform 0.2s ease;
+    }
+
+    .group-modal.open .group-dialog {
+      transform: translateY(0);
+    }
+
+    .group-name-status {
+      margin-top: 8px;
+      min-height: 18px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #b42318;
+    }
+
+    .hotel-dialog {
+      width: min(560px, 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--white);
+      box-shadow: 0 22px 40px rgba(8, 20, 45, 0.24);
+      padding: 18px;
+      transform: translateY(10px);
+      transition: transform 0.2s ease;
+    }
+
+    .hotel-modal.open .hotel-dialog {
+      transform: translateY(0);
+    }
+
+    .dialog-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .dialog-head h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .close-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #344054;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .dialog-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .hotel-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 4px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      min-height: 40px;
+      padding: 9px 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: #0f172a;
+      background: #fff;
+      outline: 0;
+    }
+
+    .field textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(31, 143, 88, 0.12);
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-lite {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #1f2937;
+    }
+
+    .hotel-status {
+      margin-top: 8px;
+      min-height: 18px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #156a41;
+    }
+
+    .driver-status {
+      margin-top: 8px;
+      min-height: 18px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #156a41;
+    }
+
+    .tour-status {
+      margin-top: 8px;
+      min-height: 18px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #156a41;
+    }
+
+    .day-block {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+      background: #fbfdfc;
+    }
+
+    .day-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .day-tools {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .day-head h4 {
+      font-size: 0.94rem;
+      color: #1f2937;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      min-height: 30px;
+      padding: 0 10px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1f2937;
+      cursor: pointer;
+    }
+
+    .day-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .day-row {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .day-row input,
+    .day-row select {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 34px;
+      padding: 0 8px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      background: #fff;
+      outline: 0;
+    }
+
+    .remove-row-btn {
+      border: 1px solid #f0c9c9;
+      background: #fff5f5;
+      color: #9b1c1c;
+      border-radius: 8px;
+      min-height: 34px;
+      min-width: 34px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .remove-day-btn {
+      border: 1px solid #e8d0d0;
+      background: #fff8f8;
+      color: #9b1c1c;
+      border-radius: 8px;
+      min-height: 30px;
+      padding: 0 10px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .driver-status-select {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      font-family: inherit;
+      font-size: 0.84rem;
+      padding: 0 8px;
+      outline: 0;
+    }
+
+    .driver-status-select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(31, 143, 88, 0.12);
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hotel-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+      }
+
+      .day-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="dashboard">
+    <header class="topbar">
+      <h1 class="brand">Tour<span>Pilot</span> AgentDashboard</h1>
+      <div class="top-actions">
+        <button class="icon-btn" type="button" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M15 17H5C5.95 16.1 6.5 14.9 6.5 13.6V10.5C6.5 7.46 8.96 5 12 5C15.04 5 17.5 7.46 17.5 10.5V13.6C17.5 14.9 18.05 16.1 19 17H15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 19C10.35 19.6 11.12 20 12 20C12.88 20 13.65 19.6 14 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span class="icon-dot" aria-hidden="true"></span>
+        </button>
+        <a href="tourism-landing (1).html" class="btn btn-ghost">Back to Site</a>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Dashboard Tabs">
+      <button class="tab-btn active" data-tab="overview" type="button">Overview</button>
+      <button class="tab-btn" data-tab="bookings" type="button">Bookings</button>
+      <button class="tab-btn" data-tab="tours" type="button">Tours</button>
+      <button class="tab-btn" data-tab="drivers" type="button">Drivers</button>
+      <button class="tab-btn" data-tab="travelers" type="button">Travelers</button>
+      <button class="tab-btn" data-tab="all" type="button">ALL</button>
+      <button class="tab-btn" data-tab="groups" type="button">Groups</button>
+    </nav>
+
+    <section class="content">
+      <article class="tab-panel active" id="overview">
+        <div class="panel-head">
+          <h2>Dashboard Overview</h2>
+          <p>Track today’s performance and active operations in one place.</p>
+        </div>
+        <div class="grid">
+          <div class="card">
+            <h3>Active Tours</h3>
+            <p class="value">14</p>
+            <p class="sub">3 more than yesterday</p>
+          </div>
+          <div class="card">
+            <h3>Today Bookings</h3>
+            <p class="value">36</p>
+            <p class="sub">82% confirmation rate</p>
+          </div>
+          <div class="card">
+            <h3>Revenue</h3>
+            <p class="value">$18,420</p>
+            <p class="sub">This week so far</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="tab-panel" id="bookings">
+        <div class="panel-head">
+          <h2>Bookings</h2>
+          <p>Latest reservations and their current status.</p>
+        </div>
+        <div class="list">
+          <div class="item"><span>BN-1202 | Ella Sunrise Trail | 2 guests</span><span class="status ok">Confirmed</span></div>
+          <div class="item"><span>BN-1203 | River Safari | 4 guests</span><span class="status warn">Pending</span></div>
+          <div class="item"><span>BN-1204 | Tea Estate Walk | 1 guest</span><span class="status ok">Confirmed</span></div>
+        </div>
+      </article>
+
+      <article class="tab-panel" id="tours">
+        <div class="panel-head">
+          <h2>Tours</h2>
+          <p>Manage schedule, guides, and route readiness.</p>
+        </div>
+        <div class="table-tools">
+          <div class="tools-left"></div>
+          <div class="tools-right">
+            <button class="btn btn-primary" id="addTourBtn" type="button">Add Tour</button>
+          </div>
+        </div>
+        <div class="list">
+          <div id="toursList"></div>
+        </div>
+        <div id="tourDetail" class="tour-detail" hidden>
+          <h3 id="tourDetailTitle">Tour Details</h3>
+          <div id="tourDetailBody"></div>
+        </div>
+      </article>
+
+      <article class="tab-panel" id="drivers">
+        <div class="panel-head">
+          <h2>Drivers</h2>
+          <p>All registered drivers and current availability.</p>
+        </div>
+        <div class="table-tools">
+          <div class="tools-left">
+            <select id="driverFilter" class="table-filter" aria-label="Filter drivers by status">
+              <option value="all">All Status</option>
+              <option value="Available">Available</option>
+              <option value="On Tour">On Tour</option>
+              <option value="Off Duty">Off Duty</option>
+            </select>
+          </div>
+          <div class="tools-right">
+            <button class="btn btn-primary" id="openDriverModal" type="button">Add Driver</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="hotel-table">
+            <thead>
+              <tr>
+                <th>Driver Name</th>
+                <th>License No</th>
+                <th>Phone</th>
+                <th>Vehicle</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="driverTableBody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="tab-panel" id="travelers">
+        <div class="panel-head">
+          <h2>Travelers</h2>
+          <p>Recent guests and support priorities.</p>
+        </div>
+        <div class="list">
+          <div class="item"><span>Amelia J. | VIP Notes: Vegetarian</span><span class="status ok">Handled</span></div>
+          <div class="item"><span>Kavin P. | Airport pickup request</span><span class="status warn">New</span></div>
+          <div class="item"><span>Lucas M. | Date change request</span><span class="status late">Urgent</span></div>
+        </div>
+      </article>
+
+      <article class="tab-panel" id="all">
+        <div class="panel-head">
+          <h2>All Added Entities</h2>
+          <p>Every entity created from the ADD popup appears here.</p>
+        </div>
+        <div class="table-tools">
+          <div class="tools-left">
+            <button id="makeGroupBtn" class="group-btn" type="button" disabled>Make Group</button>
+            <p id="groupStatus" class="group-status" aria-live="polite"></p>
+          </div>
+          <div class="tools-right">
+            <select id="typeFilter" class="table-filter" aria-label="Filter by type">
+              <option value="all">All Types</option>
+              <option value="hotel">hotel</option>
+              <option value="activity">activity</option>
+              <option value="restuarant">restuarant</option>
+              <option value="view point">view point</option>
+            </select>
+            <button class="btn btn-primary" id="openHotelModal" type="button">ADD</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="hotel-table">
+            <thead>
+              <tr>
+                <th class="tick-col"><input id="selectAllHotels" class="tick-input" type="checkbox" aria-label="Select all"></th>
+                <th>Entity Name</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Rooms</th>
+                <th>Price/Night</th>
+                <th>Contact</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="hotelTableBody">
+              <tr id="emptyHotelRow">
+                <td class="empty-text" colspan="8">No entities added yet. Click ADD to create one.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="tab-panel" id="groups">
+        <div class="panel-head">
+          <h2>Groups</h2>
+          <p>Open a group card to view all entities linked to that group.</p>
+        </div>
+        <div id="groupsList" class="group-cards">
+          <p id="emptyGroupsText" class="empty-text">No groups created yet. Select items in ALL and click Make Group.</p>
+        </div>
+        <div id="groupDetail" class="group-detail" hidden>
+          <h3 id="groupDetailTitle">Group Details</h3>
+          <div class="table-wrap">
+            <table class="hotel-table">
+              <thead>
+                <tr>
+                  <th>Entity Name</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                  <th>Rooms</th>
+                  <th>Price/Night</th>
+                  <th>Contact</th>
+                </tr>
+              </thead>
+              <tbody id="groupDetailBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="hotel-modal" id="hotelModal" aria-hidden="true">
+    <div class="hotel-dialog" role="dialog" aria-modal="true" aria-labelledby="hotelDialogTitle">
+      <div class="dialog-head">
+        <h3 id="hotelDialogTitle">Add Hotel Details</h3>
+        <button class="close-btn" id="closeHotelModal" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="dialog-sub">Enter key information for hotel partners and accommodations.</p>
+
+      <form id="hotelForm">
+        <div class="hotel-form-grid">
+          <div class="field">
+            <label for="hotelName">Hotel Name</label>
+            <input id="hotelName" type="text" placeholder="Blue Horizon Resort" required>
+          </div>
+          <div class="field">
+            <label for="hotelType">Type</label>
+            <select id="hotelType" required>
+              <option value="" selected disabled>Select type</option>
+              <option value="hotel">hotel</option>
+              <option value="activity">activity</option>
+              <option value="restuarant">restuarant</option>
+              <option value="view point">view point</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="hotelCity">City / Area</label>
+            <input id="hotelCity" type="text" placeholder="Ella" required>
+          </div>
+          <div class="field">
+            <label for="hotelRooms">Available Rooms</label>
+            <input id="hotelRooms" type="number" min="1" placeholder="24" required>
+          </div>
+          <div class="field">
+            <label for="hotelPrice">Price per Night ($)</label>
+            <input id="hotelPrice" type="number" min="0" step="0.01" placeholder="85" required>
+          </div>
+          <div class="field full">
+            <label for="hotelContact">Contact Number</label>
+            <input id="hotelContact" type="tel" placeholder="+94 77 123 4567" required>
+          </div>
+          <div class="field full">
+            <label for="hotelNotes">Notes</label>
+            <textarea id="hotelNotes" placeholder="Pickup details, meal options, cancellation policy..."></textarea>
+          </div>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="btn btn-lite" id="cancelHotel" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save Hotel</button>
+        </div>
+        <p class="hotel-status" id="hotelStatus" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="group-modal" id="groupModal" aria-hidden="true">
+    <div class="group-dialog" role="dialog" aria-modal="true" aria-labelledby="groupDialogTitle">
+      <div class="dialog-head">
+        <h3 id="groupDialogTitle">Create Group</h3>
+        <button class="close-btn" id="closeGroupModal" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="dialog-sub">Type a name for this group before saving selected entries.</p>
+      <form id="groupForm">
+        <div class="field">
+          <label for="groupNameInput">Group Name</label>
+          <input id="groupNameInput" type="text" placeholder="Example: Ella Premium Picks" maxlength="60" required>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-lite" id="cancelGroupModal" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Create Group</button>
+        </div>
+        <p id="groupNameStatus" class="group-name-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="group-modal" id="driverModal" aria-hidden="true">
+    <div class="group-dialog" role="dialog" aria-modal="true" aria-labelledby="driverDialogTitle">
+      <div class="dialog-head">
+        <h3 id="driverDialogTitle">Add Driver Details</h3>
+        <button class="close-btn" id="closeDriverModal" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="dialog-sub">Add driver profile details for trip assignment.</p>
+      <form id="driverForm">
+        <div class="hotel-form-grid">
+          <div class="field">
+            <label for="driverName">Driver Name</label>
+            <input id="driverName" type="text" placeholder="Nimal Perera" required>
+          </div>
+          <div class="field">
+            <label for="driverLicense">License No</label>
+            <input id="driverLicense" type="text" placeholder="B321-9845" required>
+          </div>
+          <div class="field">
+            <label for="driverPhone">Phone</label>
+            <input id="driverPhone" type="tel" placeholder="+94 77 245 9032" required>
+          </div>
+          <div class="field">
+            <label for="driverVehicle">Vehicle</label>
+            <input id="driverVehicle" type="text" placeholder="Toyota KDH" required>
+          </div>
+          <div class="field full">
+            <label for="driverState">Status</label>
+            <select id="driverState" required>
+              <option value="Available">Available</option>
+              <option value="On Tour">On Tour</option>
+              <option value="Off Duty">Off Duty</option>
+            </select>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-lite" id="cancelDriverModal" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save Driver</button>
+        </div>
+        <p id="driverStatus" class="driver-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="group-modal" id="tourModal" aria-hidden="true">
+    <div class="group-dialog" role="dialog" aria-modal="true" aria-labelledby="tourDialogTitle">
+      <div class="dialog-head">
+        <h3 id="tourDialogTitle">Create Ready-Made Tour</h3>
+        <button class="close-btn" id="closeTourModal" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="dialog-sub">Set a tour title and plan day-wise entities with times.</p>
+      <form id="tourForm">
+        <div class="field full">
+          <label for="tourTitle">Tour Title</label>
+          <input id="tourTitle" type="text" placeholder="Ella 2-Day Highlights" maxlength="80" required>
+        </div>
+
+        <div id="dayPlansContainer"></div>
+        <div class="day-tools">
+          <button id="addDayBtn" class="mini-btn" type="button">+ Add Day</button>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="btn btn-lite" id="cancelTourModal" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save Tour</button>
+        </div>
+        <p id="tourStatus" class="tour-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+    const openHotelModalBtn = document.getElementById("openHotelModal");
+    const closeHotelModalBtn = document.getElementById("closeHotelModal");
+    const cancelHotelBtn = document.getElementById("cancelHotel");
+    const hotelModal = document.getElementById("hotelModal");
+    const hotelForm = document.getElementById("hotelForm");
+    const hotelStatus = document.getElementById("hotelStatus");
+    const hotelNameInput = document.getElementById("hotelName");
+    const hotelTableBody = document.getElementById("hotelTableBody");
+    const typeFilter = document.getElementById("typeFilter");
+    const makeGroupBtn = document.getElementById("makeGroupBtn");
+    const groupStatus = document.getElementById("groupStatus");
+    const selectAllHotels = document.getElementById("selectAllHotels");
+    const groupsList = document.getElementById("groupsList");
+    const emptyGroupsText = document.getElementById("emptyGroupsText");
+    const groupDetail = document.getElementById("groupDetail");
+    const groupDetailTitle = document.getElementById("groupDetailTitle");
+    const groupDetailBody = document.getElementById("groupDetailBody");
+    const groupModal = document.getElementById("groupModal");
+    const closeGroupModalBtn = document.getElementById("closeGroupModal");
+    const cancelGroupModalBtn = document.getElementById("cancelGroupModal");
+    const groupForm = document.getElementById("groupForm");
+    const groupNameInput = document.getElementById("groupNameInput");
+    const groupNameStatus = document.getElementById("groupNameStatus");
+    const openDriverModalBtn = document.getElementById("openDriverModal");
+    const closeDriverModalBtn = document.getElementById("closeDriverModal");
+    const cancelDriverModalBtn = document.getElementById("cancelDriverModal");
+    const driverModal = document.getElementById("driverModal");
+    const driverForm = document.getElementById("driverForm");
+    const driverStatus = document.getElementById("driverStatus");
+    const driverNameInput = document.getElementById("driverName");
+    const driverTableBody = document.getElementById("driverTableBody");
+    const driverFilter = document.getElementById("driverFilter");
+    const addTourBtn = document.getElementById("addTourBtn");
+    const toursList = document.getElementById("toursList");
+    const tourModal = document.getElementById("tourModal");
+    const closeTourModalBtn = document.getElementById("closeTourModal");
+    const cancelTourModalBtn = document.getElementById("cancelTourModal");
+    const tourForm = document.getElementById("tourForm");
+    const tourTitle = document.getElementById("tourTitle");
+    const dayPlansContainer = document.getElementById("dayPlansContainer");
+    const addDayBtn = document.getElementById("addDayBtn");
+    const tourStatus = document.getElementById("tourStatus");
+    const tourDetail = document.getElementById("tourDetail");
+    const tourDetailTitle = document.getElementById("tourDetailTitle");
+    const tourDetailBody = document.getElementById("tourDetailBody");
+
+    const hotels = [];
+    const selectedHotelIds = new Set();
+    const groups = [];
+    const drivers = [
+      { id: 1, name: "Nimal Perera", license: "B321-9845", phone: "+94 77 245 9032", vehicle: "Toyota KDH", status: "Available" },
+      { id: 2, name: "Sahan Dilshan", license: "C446-7703", phone: "+94 71 889 1450", vehicle: "Nissan Caravan", status: "On Tour" },
+      { id: 3, name: "Ruwan Jayasuriya", license: "B886-2144", phone: "+94 76 563 0091", vehicle: "Suzuki Every", status: "Available" }
+    ];
+    const tours = [];
+    let nextHotelId = 1;
+    let nextGroupId = 1;
+    let nextDriverId = 4;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function getFilteredHotels() {
+      const selectedType = typeFilter.value;
+      return selectedType === "all"
+        ? hotels
+        : hotels.filter((hotel) => hotel.type === selectedType);
+    }
+
+    function updateGroupButtonState() {
+      const selectedCount = selectedHotelIds.size;
+      makeGroupBtn.disabled = selectedCount === 0;
+      groupStatus.textContent = selectedCount > 0 ? selectedCount + " selected" : "";
+    }
+
+    function renderDriversTable() {
+      const selectedStatus = driverFilter.value;
+      const filteredDrivers = selectedStatus === "all"
+        ? drivers
+        : drivers.filter((driver) => driver.status === selectedStatus);
+
+      if (filteredDrivers.length === 0) {
+        driverTableBody.innerHTML = "<tr><td class=\"empty-text\" colspan=\"5\">No drivers added yet.</td></tr>";
+        return;
+      }
+
+      driverTableBody.innerHTML = filteredDrivers
+        .map((driver) => `
+          <tr>
+            <td>${escapeHtml(driver.name)}</td>
+            <td>${escapeHtml(driver.license)}</td>
+            <td>${escapeHtml(driver.phone)}</td>
+            <td>${escapeHtml(driver.vehicle)}</td>
+            <td>
+              <select class="driver-status-select" data-id="${driver.id}" aria-label="Driver status">
+                <option value="Available" ${driver.status === "Available" ? "selected" : ""}>Available</option>
+                <option value="On Tour" ${driver.status === "On Tour" ? "selected" : ""}>On Tour</option>
+                <option value="Off Duty" ${driver.status === "Off Duty" ? "selected" : ""}>Off Duty</option>
+              </select>
+            </td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function entityOptionsHtml() {
+      if (hotels.length === 0) {
+        return "<option value=\"\">No entities available</option>";
+      }
+
+      return hotels
+        .map((entity) => `<option value="${entity.id}">${escapeHtml(entity.name)} (${escapeHtml(entity.type)})</option>`)
+        .join("");
+    }
+
+    function createDayRow(dayList) {
+      const row = document.createElement("div");
+      row.className = "day-row";
+      row.innerHTML = `
+        <input type="time" required>
+        <select required>${entityOptionsHtml()}</select>
+        <button type="button" class="remove-row-btn">×</button>
+      `;
+
+      row.querySelector(".remove-row-btn").addEventListener("click", () => {
+        row.remove();
+      });
+
+      dayList.appendChild(row);
+    }
+
+    function createDayBlock(dayNumber) {
+      const block = document.createElement("div");
+      block.className = "day-block";
+      block.dataset.day = String(dayNumber);
+      block.innerHTML = `
+        <div class="day-head">
+          <h4>Day ${dayNumber}</h4>
+          <div style="display:flex; gap:8px;">
+            <button class="mini-btn add-entity-btn" type="button">+ Add Entity</button>
+            <button class="remove-day-btn" type="button">Remove Day</button>
+          </div>
+        </div>
+        <div class="day-list"></div>
+      `;
+
+      const dayList = block.querySelector(".day-list");
+      const addEntityBtn = block.querySelector(".add-entity-btn");
+      const removeDayBtn = block.querySelector(".remove-day-btn");
+
+      addEntityBtn.addEventListener("click", () => createDayRow(dayList));
+      removeDayBtn.addEventListener("click", () => {
+        block.remove();
+        renumberDayBlocks();
+      });
+
+      createDayRow(dayList);
+      dayPlansContainer.appendChild(block);
+    }
+
+    function renumberDayBlocks() {
+      const blocks = Array.from(dayPlansContainer.querySelectorAll(".day-block"));
+      blocks.forEach((block, index) => {
+        const dayNumber = index + 1;
+        block.dataset.day = String(dayNumber);
+        const title = block.querySelector("h4");
+        if (title) {
+          title.textContent = "Day " + dayNumber;
+        }
+      });
+    }
+
+    function collectDayPlan(dayList) {
+      const rows = Array.from(dayList.querySelectorAll(".day-row"));
+      return rows.map((row) => {
+        const time = row.querySelector("input").value;
+        const entityId = row.querySelector("select").value;
+        const entity = hotels.find((item) => String(item.id) === entityId);
+        return {
+          time,
+          entityId,
+          entityName: entity ? entity.name : ""
+        };
+      }).filter((item) => item.time && item.entityId);
+    }
+
+    function renderToursList() {
+      if (tours.length === 0) {
+        toursList.innerHTML = "<div class=\"item\"><span class=\"empty-text\">No tours available. Click Add Tour to create one.</span></div>";
+        tourDetail.hidden = true;
+        return;
+      }
+
+      toursList.innerHTML = tours
+        .map((tour, index) => {
+          const statusClass = tour.status === "On Time" ? "ok" : (tour.status === "Weather Watch" ? "warn" : "ok");
+          return `<div class=\"item tour-item\" data-tour-index=\"${index}\"><span>${escapeHtml(tour.title)} - ${escapeHtml(tour.time)}</span><span class=\"status ${statusClass}\">${escapeHtml(tour.status)}</span></div>`;
+        })
+        .join("");
+    }
+
+    function showTourDetails(index) {
+      const tour = tours[index];
+      if (!tour) {
+        tourDetail.hidden = true;
+        return;
+      }
+
+      tourDetailTitle.textContent = tour.title + " Details";
+      const days = Array.isArray(tour.days) ? tour.days : [];
+
+      if (days.length === 0) {
+        tourDetailBody.innerHTML = "<p class=\"empty-text\">No day-wise itinerary available.</p>";
+        tourDetail.hidden = false;
+        return;
+      }
+
+      tourDetailBody.innerHTML = days
+        .map((day) => {
+          const entries = day.entries || [];
+          const listHtml = entries.length === 0
+            ? "<li>No entities planned.</li>"
+            : entries.map((entry) => `<li>${escapeHtml(entry.time)} - ${escapeHtml(entry.entityName)}</li>`).join("");
+
+          return `
+            <div class=\"tour-day\">
+              <h4>Day ${day.day}</h4>
+              <ul>${listHtml}</ul>
+            </div>
+          `;
+        })
+        .join("");
+
+      tourDetail.hidden = false;
+    }
+
+    toursList.addEventListener("click", (event) => {
+      const row = event.target.closest(".tour-item");
+      if (!row) {
+        return;
+      }
+
+      const index = Number(row.dataset.tourIndex);
+      showTourDetails(index);
+    });
+
+    driverFilter.addEventListener("change", renderDriversTable);
+
+    driverTableBody.addEventListener("change", (event) => {
+      if (!event.target.classList.contains("driver-status-select")) {
+        return;
+      }
+
+      const driverId = Number(event.target.dataset.id);
+      const driver = drivers.find((item) => item.id === driverId);
+      if (!driver) {
+        return;
+      }
+
+      driver.status = event.target.value;
+      renderDriversTable();
+    });
+
+    function renderGroups() {
+      if (groups.length === 0) {
+        groupsList.innerHTML = "";
+        groupsList.appendChild(emptyGroupsText);
+        emptyGroupsText.style.display = "block";
+        groupDetail.hidden = true;
+        return;
+      }
+
+      groupsList.innerHTML = groups
+        .map((group) => `
+          <button class="group-card" type="button" data-group-id="${group.id}">
+            <h4>${escapeHtml(group.title)}</h4>
+            <p>${group.items.length} entries</p>
+          </button>
+        `)
+        .join("");
+    }
+
+    function openGroupModal() {
+      groupModal.classList.add("open");
+      groupModal.setAttribute("aria-hidden", "false");
+      groupNameInput.focus();
+    }
+
+    function closeGroupModal() {
+      groupModal.classList.remove("open");
+      groupModal.setAttribute("aria-hidden", "true");
+      groupForm.reset();
+      groupNameStatus.textContent = "";
+    }
+
+    function openDriverModal() {
+      driverModal.classList.add("open");
+      driverModal.setAttribute("aria-hidden", "false");
+      driverNameInput.focus();
+    }
+
+    function closeDriverModal() {
+      driverModal.classList.remove("open");
+      driverModal.setAttribute("aria-hidden", "true");
+      driverForm.reset();
+      driverStatus.textContent = "";
+    }
+
+    function initTourDays() {
+      dayPlansContainer.innerHTML = "";
+      createDayBlock(1);
+      createDayBlock(2);
+      renumberDayBlocks();
+    }
+
+    function openTourModal() {
+      tourModal.classList.add("open");
+      tourModal.setAttribute("aria-hidden", "false");
+      tourTitle.focus();
+      initTourDays();
+    }
+
+    function closeTourModal() {
+      tourModal.classList.remove("open");
+      tourModal.setAttribute("aria-hidden", "true");
+      tourForm.reset();
+      dayPlansContainer.innerHTML = "";
+      tourStatus.textContent = "";
+    }
+
+    function showGroupDetails(groupId) {
+      const group = groups.find((item) => item.id === groupId);
+      if (!group) {
+        groupDetail.hidden = true;
+        return;
+      }
+
+      groupDetailTitle.textContent = group.title;
+      groupDetailBody.innerHTML = group.items
+        .map((hotel) => `
+          <tr>
+            <td>${escapeHtml(hotel.name)}</td>
+            <td>${escapeHtml(hotel.type)}</td>
+            <td>${escapeHtml(hotel.city)}</td>
+            <td>${escapeHtml(hotel.rooms)}</td>
+            <td>$${escapeHtml(hotel.price)}</td>
+            <td>${escapeHtml(hotel.contact)}</td>
+          </tr>
+        `)
+        .join("");
+      groupDetail.hidden = false;
+    }
+
+    function renderHotelTable() {
+      const filteredHotels = getFilteredHotels();
+
+      if (filteredHotels.length === 0) {
+        hotelTableBody.innerHTML = "<tr id=\"emptyHotelRow\"><td class=\"empty-text\" colspan=\"8\">No matching results for selected type.</td></tr>";
+        selectAllHotels.checked = false;
+        updateGroupButtonState();
+        return;
+      }
+
+      const rows = filteredHotels
+        .map((hotel) => `
+          <tr>
+            <td class="tick-col"><input class="tick-input row-select" type="checkbox" data-id="${hotel.id}" ${selectedHotelIds.has(hotel.id) ? "checked" : ""}></td>
+            <td>${escapeHtml(hotel.name)}</td>
+            <td>${escapeHtml(hotel.type)}</td>
+            <td>${escapeHtml(hotel.city)}</td>
+            <td>${escapeHtml(hotel.rooms)}</td>
+            <td>$${escapeHtml(hotel.price)}</td>
+            <td>${escapeHtml(hotel.contact)}</td>
+            <td>${escapeHtml(hotel.notes || "-")}</td>
+          </tr>
+        `)
+        .join("");
+
+      hotelTableBody.innerHTML = rows;
+      const allVisibleSelected = filteredHotels.length > 0 && filteredHotels.every((hotel) => selectedHotelIds.has(hotel.id));
+      selectAllHotels.checked = allVisibleSelected;
+      updateGroupButtonState();
+    }
+
+    typeFilter.addEventListener("change", renderHotelTable);
+
+    selectAllHotels.addEventListener("change", () => {
+      const filteredHotels = getFilteredHotels();
+      if (selectAllHotels.checked) {
+        filteredHotels.forEach((hotel) => selectedHotelIds.add(hotel.id));
+      } else {
+        filteredHotels.forEach((hotel) => selectedHotelIds.delete(hotel.id));
+      }
+      renderHotelTable();
+    });
+
+    hotelTableBody.addEventListener("change", (event) => {
+      if (!event.target.classList.contains("row-select")) {
+        return;
+      }
+
+      const hotelId = Number(event.target.dataset.id);
+      if (event.target.checked) {
+        selectedHotelIds.add(hotelId);
+      } else {
+        selectedHotelIds.delete(hotelId);
+      }
+      updateGroupButtonState();
+      const filteredHotels = getFilteredHotels();
+      selectAllHotels.checked = filteredHotels.length > 0 && filteredHotels.every((hotel) => selectedHotelIds.has(hotel.id));
+    });
+
+    makeGroupBtn.addEventListener("click", () => {
+      if (selectedHotelIds.size === 0) {
+        return;
+      }
+      openGroupModal();
+    });
+
+    closeGroupModalBtn.addEventListener("click", closeGroupModal);
+    cancelGroupModalBtn.addEventListener("click", closeGroupModal);
+    openDriverModalBtn.addEventListener("click", openDriverModal);
+    closeDriverModalBtn.addEventListener("click", closeDriverModal);
+    cancelDriverModalBtn.addEventListener("click", closeDriverModal);
+    addTourBtn.addEventListener("click", openTourModal);
+    closeTourModalBtn.addEventListener("click", closeTourModal);
+    cancelTourModalBtn.addEventListener("click", closeTourModal);
+    addDayBtn.addEventListener("click", () => {
+      createDayBlock(dayPlansContainer.querySelectorAll(".day-block").length + 1);
+      renumberDayBlocks();
+    });
+
+    groupModal.addEventListener("click", (event) => {
+      if (event.target === groupModal) {
+        closeGroupModal();
+      }
+    });
+
+    driverModal.addEventListener("click", (event) => {
+      if (event.target === driverModal) {
+        closeDriverModal();
+      }
+    });
+
+    tourModal.addEventListener("click", (event) => {
+      if (event.target === tourModal) {
+        closeTourModal();
+      }
+    });
+
+    groupsList.addEventListener("click", (event) => {
+      const card = event.target.closest(".group-card");
+      if (!card) {
+        return;
+      }
+
+      const groupId = Number(card.dataset.groupId);
+      showGroupDetails(groupId);
+    });
+
+    function activateTab(tabId) {
+      tabButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === tabId);
+      });
+
+      tabPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.id === tabId);
+      });
+    }
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activateTab(button.dataset.tab);
+      });
+    });
+
+    function openHotelModal() {
+      hotelModal.classList.add("open");
+      hotelModal.setAttribute("aria-hidden", "false");
+      hotelNameInput.focus();
+    }
+
+    function closeHotelModal() {
+      hotelModal.classList.remove("open");
+      hotelModal.setAttribute("aria-hidden", "true");
+    }
+
+    openHotelModalBtn.addEventListener("click", openHotelModal);
+    closeHotelModalBtn.addEventListener("click", closeHotelModal);
+    cancelHotelBtn.addEventListener("click", closeHotelModal);
+
+    hotelModal.addEventListener("click", (event) => {
+      if (event.target === hotelModal) {
+        closeHotelModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && hotelModal.classList.contains("open")) {
+        closeHotelModal();
+      }
+
+      if (event.key === "Escape" && groupModal.classList.contains("open")) {
+        closeGroupModal();
+      }
+
+      if (event.key === "Escape" && driverModal.classList.contains("open")) {
+        closeDriverModal();
+      }
+
+      if (event.key === "Escape" && tourModal.classList.contains("open")) {
+        closeTourModal();
+      }
+    });
+
+    groupForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const rawName = groupNameInput.value.trim();
+      if (!rawName) {
+        groupNameStatus.textContent = "Please enter a group name.";
+        return;
+      }
+
+      const selectedHotels = hotels.filter((hotel) => selectedHotelIds.has(hotel.id));
+      if (selectedHotels.length === 0) {
+        groupNameStatus.textContent = "No entries selected. Please select items first.";
+        return;
+      }
+
+      const group = {
+        id: nextGroupId,
+        title: rawName,
+        items: selectedHotels.map((hotel) => ({ ...hotel }))
+      };
+      nextGroupId += 1;
+      groups.push(group);
+
+      selectedHotelIds.clear();
+      selectAllHotels.checked = false;
+      renderHotelTable();
+      renderGroups();
+      showGroupDetails(group.id);
+      activateTab("groups");
+      groupStatus.textContent = group.title + " created with " + group.items.length + " entries.";
+      closeGroupModal();
+    });
+
+    driverForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const driverData = {
+        id: nextDriverId++,
+        name: document.getElementById("driverName").value.trim(),
+        license: document.getElementById("driverLicense").value.trim(),
+        phone: document.getElementById("driverPhone").value.trim(),
+        vehicle: document.getElementById("driverVehicle").value.trim(),
+        status: document.getElementById("driverState").value
+      };
+
+      drivers.push(driverData);
+      renderDriversTable();
+      driverStatus.textContent = "Driver added successfully.";
+
+      setTimeout(() => {
+        closeDriverModal();
+      }, 600);
+    });
+
+    tourForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const title = tourTitle.value.trim();
+      const blocks = Array.from(dayPlansContainer.querySelectorAll(".day-block"));
+      const dayPlans = blocks.map((block, index) => ({
+        day: index + 1,
+        entries: collectDayPlan(block.querySelector(".day-list"))
+      }));
+
+      if (!title) {
+        tourStatus.textContent = "Please enter a tour title.";
+        return;
+      }
+
+      if (dayPlans.length === 0 || dayPlans.some((day) => day.entries.length === 0)) {
+        tourStatus.textContent = "Please add at least one timed entity for each day.";
+        return;
+      }
+
+      tours.push({
+        title: title,
+        time: "Ready-Made " + dayPlans.length + " Days",
+        status: "Ready",
+        days: dayPlans
+      });
+
+      renderToursList();
+      showTourDetails(tours.length - 1);
+      tourStatus.textContent = "Tour created successfully.";
+
+      setTimeout(() => {
+        closeTourModal();
+      }, 700);
+    });
+
+    hotelForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const hotelData = {
+        id: nextHotelId++,
+        name: document.getElementById("hotelName").value.trim(),
+        type: document.getElementById("hotelType").value,
+        city: document.getElementById("hotelCity").value.trim(),
+        rooms: document.getElementById("hotelRooms").value.trim(),
+        price: document.getElementById("hotelPrice").value.trim(),
+        contact: document.getElementById("hotelContact").value.trim(),
+        notes: document.getElementById("hotelNotes").value.trim()
+      };
+
+      hotels.push(hotelData);
+      renderHotelTable();
+      hotelStatus.textContent = "Hotel details saved successfully.";
+
+      setTimeout(() => {
+        hotelForm.reset();
+        hotelStatus.textContent = "";
+        closeHotelModal();
+        activateTab("all");
+      }, 700);
+    });
+
+    renderHotelTable();
+    renderGroups();
+    renderDriversTable();
+    renderToursList();
+  </script>
+</body>
+</html>
