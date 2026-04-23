@@ -179,6 +179,60 @@
       background: var(--green);
     }
 
+    .sub-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 0;
+      min-height: 48px;
+      border-bottom: 2px solid var(--line);
+      background: #f9fbfa;
+      margin-bottom: 16px;
+    }
+
+    .sub-tab-btn {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #4b5563;
+      min-height: 48px;
+      padding: 0 12px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .sub-tab-btn:hover {
+      color: #1f2937;
+    }
+
+    .sub-tab-btn.active {
+      color: var(--green-dark);
+    }
+
+    .sub-tab-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 2px;
+      background: var(--green);
+    }
+
+    .sub-tab-panel {
+      display: none;
+      animation: fadeIn 200ms ease;
+    }
+
+    .sub-tab-panel.active {
+      display: block;
+    }
+
     .content {
       padding: 20px;
     }
@@ -224,6 +278,16 @@
       border-radius: var(--radius-md);
       background: #fff;
       padding: 14px;
+    }
+
+    .card.clickable {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card.clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(15, 39, 29, 0.12);
     }
 
     .card h3 {
@@ -835,9 +899,9 @@
           <p>Track today’s performance and active operations in one place.</p>
         </div>
         <div class="grid">
-          <div class="card">
+          <div class="card clickable" id="activeTourCard">
             <h3>Active Tours</h3>
-            <p class="value">14</p>
+            <p class="value" id="activeTourCount">14</p>
             <p class="sub">3 more than yesterday</p>
           </div>
           <div class="card">
@@ -849,6 +913,23 @@
             <h3>Revenue</h3>
             <p class="value">$18,420</p>
             <p class="sub">This week so far</p>
+          </div>
+        </div>
+        <div id="activeTourTablePanel" style="margin-top: 20px; display: none;">
+          <div class="table-wrap">
+            <table class="hotel-table">
+              <thead>
+                <tr>
+                  <th>Tour ID</th>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                  <th>Days</th>
+                </tr>
+              </thead>
+              <tbody id="activeTourTableBody">
+              </tbody>
+            </table>
           </div>
         </div>
       </article>
@@ -873,15 +954,34 @@
         <div class="table-tools">
           <div class="tools-left"></div>
           <div class="tools-right">
-            <button class="btn btn-primary" id="addTourBtn" type="button">Add Tour</button>
+            <button class="btn btn-primary" id="createReadymadeTourBtn" type="button">Create Ready-Made Tour</button>
+            <button class="btn btn-primary" id="createCustomTourBtn" type="button" style="margin-left: 8px;">Create Custom Tour</button>
           </div>
         </div>
-        <div class="list">
-          <div id="toursList"></div>
+
+        <div class="sub-tabs">
+          <button class="sub-tab-btn active" data-subtab="readymade-tours" type="button">Ready-Made Tours</button>
+          <button class="sub-tab-btn" data-subtab="custom-tours" type="button">Custom Tours</button>
         </div>
-        <div id="tourDetail" class="tour-detail" hidden>
-          <h3 id="tourDetailTitle">Tour Details</h3>
-          <div id="tourDetailBody"></div>
+
+        <div class="sub-tab-panel active" id="readymade-tours-panel">
+          <div class="list">
+            <div id="readymadeToursList"></div>
+          </div>
+          <div id="readymadeTourDetail" class="tour-detail" hidden>
+            <h3 id="readymadeTourDetailTitle">Tour Details</h3>
+            <div id="readymadeTourDetailBody"></div>
+          </div>
+        </div>
+
+        <div class="sub-tab-panel" id="custom-tours-panel">
+          <div class="list">
+            <div id="customToursList"></div>
+          </div>
+          <div id="customTourDetail" class="tour-detail" hidden>
+            <h3 id="customTourDetailTitle">Tour Details</h3>
+            <div id="customTourDetailBody"></div>
+          </div>
         </div>
       </article>
 
@@ -1151,6 +1251,50 @@
     </div>
   </div>
 
+  <div class="group-modal" id="tourDetailModal" aria-hidden="true">
+    <div class="group-dialog" role="dialog" aria-modal="true" aria-labelledby="tourDetailDialogTitle">
+      <div class="dialog-head">
+        <h3 id="tourDetailDialogTitle">Tour Details</h3>
+        <button class="close-btn" id="closeTourDetailModal" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="dialog-sub">Edit tour information and details.</p>
+      <form id="tourDetailForm">
+        <div class="hotel-form-grid">
+          <div class="field">
+            <label for="tourDetailId">Tour ID</label>
+            <input id="tourDetailId" type="text" readonly>
+          </div>
+          <div class="field full">
+            <label for="tourDetailTitle">Tour Title</label>
+            <input id="tourDetailTitle" type="text" placeholder="Ella 2-Day Highlights" required>
+          </div>
+          <div class="field">
+            <label for="tourDetailStatusSelect">Status</label>
+            <select id="tourDetailStatusSelect" required>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Pending">Pending</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tourDetailTime">Duration</label>
+            <input id="tourDetailTime" type="text" placeholder="Ready-Made 2 Days" required>
+          </div>
+          <div class="field">
+            <label for="tourDetailDays">Days Count</label>
+            <input id="tourDetailDays" type="number" min="1" required>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-lite" id="cancelTourDetailModal" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save Changes</button>
+        </div>
+        <p id="tourDetailStatus" class="tour-detail-status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
   <script>
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabPanels = document.querySelectorAll(".tab-panel");
@@ -1186,8 +1330,18 @@
     const driverNameInput = document.getElementById("driverName");
     const driverTableBody = document.getElementById("driverTableBody");
     const driverFilter = document.getElementById("driverFilter");
-    const addTourBtn = document.getElementById("addTourBtn");
-    const toursList = document.getElementById("toursList");
+    const createReadymadeTourBtn = document.getElementById("createReadymadeTourBtn");
+    const createCustomTourBtn = document.getElementById("createCustomTourBtn");
+    const readymadeToursList = document.getElementById("readymadeToursList");
+    const customToursList = document.getElementById("customToursList");
+    const readymadeTourDetail = document.getElementById("readymadeTourDetail");
+    const customTourDetail = document.getElementById("customTourDetail");
+    const readymadeTourDetailTitle = document.getElementById("readymadeTourDetailTitle");
+    const readymadeTourDetailBody = document.getElementById("readymadeTourDetailBody");
+    const customTourDetailTitle = document.getElementById("customTourDetailTitle");
+    const customTourDetailBody = document.getElementById("customTourDetailBody");
+    const subTabBtns = document.querySelectorAll(".sub-tab-btn");
+    const subTabPanels = document.querySelectorAll(".sub-tab-panel");
     const tourModal = document.getElementById("tourModal");
     const closeTourModalBtn = document.getElementById("closeTourModal");
     const cancelTourModalBtn = document.getElementById("cancelTourModal");
@@ -1196,9 +1350,12 @@
     const dayPlansContainer = document.getElementById("dayPlansContainer");
     const addDayBtn = document.getElementById("addDayBtn");
     const tourStatus = document.getElementById("tourStatus");
-    const tourDetail = document.getElementById("tourDetail");
-    const tourDetailTitle = document.getElementById("tourDetailTitle");
-    const tourDetailBody = document.getElementById("tourDetailBody");
+    const tourDetailModal = document.getElementById("tourDetailModal");
+    const closeTourDetailModalBtn = document.getElementById("closeTourDetailModal");
+    const cancelTourDetailModalBtn = document.getElementById("cancelTourDetailModal");
+    const tourDetailForm = document.getElementById("tourDetailForm");
+    const tourDetailStatusSelect = document.getElementById("tourDetailStatusSelect");
+    const tourDetailStatusMsg = document.getElementById("tourDetailStatus");
 
     const hotels = [];
     const selectedHotelIds = new Set();
@@ -1208,10 +1365,27 @@
       { id: 2, name: "Sahan Dilshan", license: "C446-7703", phone: "+94 71 889 1450", vehicle: "Nissan Caravan", status: "On Tour" },
       { id: 3, name: "Ruwan Jayasuriya", license: "B886-2144", phone: "+94 76 563 0091", vehicle: "Suzuki Every", status: "Available" }
     ];
-    const tours = [];
+    const tours = [
+      { id: "TR-001", title: "Ella 2-Day Highlights", status: "Active", time: "Ready-Made 2 Days", days: 2, type: "readymade" },
+      { id: "TR-002", title: "Nine Arches + Tea Estate", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-003", title: "Sunset Viewpoint Tour", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-004", title: "Mountain Trek Adventure", status: "Active", time: "Ready-Made 3 Days", days: 3, type: "readymade" },
+      { id: "TR-005", title: "Tea Plantation Walk", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-006", title: "Little Adam's Peak Hike", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-007", title: "Ravana Falls Explorer", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-008", title: "Scenic Loop Drive", status: "Active", time: "Ready-Made 2 Days", days: 2, type: "readymade" },
+      { id: "TR-009", title: "Nature Trail & Picnic", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-010", title: "Waterfall Discovery", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-011", title: "Cultural Heritage Tour", status: "Active", time: "Ready-Made 2 Days", days: 2, type: "readymade" },
+      { id: "TR-012", title: "Sunrise & Breakfast", status: "Active", time: "Ready-Made 1 Day", days: 1, type: "readymade" },
+      { id: "TR-013", title: "Adventure Sports Package", status: "Active", time: "Ready-Made 3 Days", days: 3, type: "readymade" },
+      { id: "TR-014", title: "Photography Tour", status: "Active", time: "Ready-Made 2 Days", days: 2, type: "readymade" }
+    ];
     let nextHotelId = 1;
     let nextGroupId = 1;
     let nextDriverId = 4;
+    let nextTourId = 15;
+    let tourCreationType = "readymade";
 
     function escapeHtml(value) {
       return String(value)
@@ -1346,38 +1520,68 @@
       }).filter((item) => item.time && item.entityId);
     }
 
-    function renderToursList() {
-      if (tours.length === 0) {
-        toursList.innerHTML = "<div class=\"item\"><span class=\"empty-text\">No tours available. Click Add Tour to create one.</span></div>";
-        tourDetail.hidden = true;
+    function renderReadymadeTours() {
+      const readymadeTours = tours.filter(t => t.type === "readymade");
+      if (readymadeTours.length === 0) {
+        readymadeToursList.innerHTML = "<div class=\"item\"><span class=\"empty-text\">No ready-made tours available.</span></div>";
+        readymadeTourDetail.hidden = true;
         return;
       }
 
-      toursList.innerHTML = tours
+      readymadeToursList.innerHTML = readymadeTours
         .map((tour, index) => {
+          const tourIndex = tours.findIndex(t => t === tour);
           const statusClass = tour.status === "On Time" ? "ok" : (tour.status === "Weather Watch" ? "warn" : "ok");
-          return `<div class=\"item tour-item\" data-tour-index=\"${index}\"><span>${escapeHtml(tour.title)} - ${escapeHtml(tour.time)}</span><span class=\"status ${statusClass}\">${escapeHtml(tour.status)}</span></div>`;
+          return `<div class=\"item tour-item\" data-tour-index=\"${tourIndex}\" data-tour-type="readymade\"><span>${escapeHtml(tour.title)} - ${escapeHtml(tour.time)}</span><span class=\"status ${statusClass}\">${escapeHtml(tour.status)}</span></div>`;
         })
         .join("");
     }
 
-    function showTourDetails(index) {
-      const tour = tours[index];
-      if (!tour) {
-        tourDetail.hidden = true;
+    function renderCustomTours() {
+      const customTours = tours.filter(t => t.type === "custom");
+      if (customTours.length === 0) {
+        customToursList.innerHTML = "<div class=\"item\"><span class=\"empty-text\">No custom tours available. Click Create Custom Tour to add one.</span></div>";
+        customTourDetail.hidden = true;
         return;
       }
 
-      tourDetailTitle.textContent = tour.title + " Details";
+      customToursList.innerHTML = customTours
+        .map((tour, index) => {
+          const tourIndex = tours.findIndex(t => t === tour);
+          const statusClass = tour.status === "On Time" ? "ok" : (tour.status === "Weather Watch" ? "warn" : "ok");
+          return `<div class=\"item tour-item\" data-tour-index=\"${tourIndex}\" data-tour-type="custom\"><span>${escapeHtml(tour.title)} - ${escapeHtml(tour.time)}</span><span class=\"status ${statusClass}\">${escapeHtml(tour.status)}</span></div>`;
+        })
+        .join("");
+    }
+
+    function renderToursList() {
+      renderReadymadeTours();
+      renderCustomTours();
+    }
+
+    function showTourDetails(index, tourType) {
+      const tour = tours[index];
+      if (!tour) {
+        readymadeTourDetail.hidden = true;
+        customTourDetail.hidden = true;
+        return;
+      }
+
+      const isReadymade = tourType === "readymade";
+      const detailTitle = isReadymade ? readymadeTourDetailTitle : customTourDetailTitle;
+      const detailBody = isReadymade ? readymadeTourDetailBody : customTourDetailBody;
+      const detailDiv = isReadymade ? readymadeTourDetail : customTourDetail;
+
+      detailTitle.textContent = tour.title + " Details";
       const days = Array.isArray(tour.days) ? tour.days : [];
 
       if (days.length === 0) {
-        tourDetailBody.innerHTML = "<p class=\"empty-text\">No day-wise itinerary available.</p>";
-        tourDetail.hidden = false;
+        detailBody.innerHTML = "<p class=\"empty-text\">No day-wise itinerary available.</p>";
+        detailDiv.hidden = false;
         return;
       }
 
-      tourDetailBody.innerHTML = days
+      detailBody.innerHTML = days
         .map((day) => {
           const entries = day.entries || [];
           const listHtml = entries.length === 0
@@ -1393,17 +1597,47 @@
         })
         .join("");
 
-      tourDetail.hidden = false;
+      detailDiv.hidden = false;
     }
 
-    toursList.addEventListener("click", (event) => {
+    readymadeToursList.addEventListener("click", (event) => {
       const row = event.target.closest(".tour-item");
       if (!row) {
         return;
       }
 
       const index = Number(row.dataset.tourIndex);
-      showTourDetails(index);
+      showTourDetails(index, "readymade");
+    });
+
+    customToursList.addEventListener("click", (event) => {
+      const row = event.target.closest(".tour-item");
+      if (!row) {
+        return;
+      }
+
+      const index = Number(row.dataset.tourIndex);
+      showTourDetails(index, "custom");
+    });
+
+    subTabBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const subtabId = btn.dataset.subtab;
+        subTabBtns.forEach((b) => b.classList.remove("active"));
+        subTabPanels.forEach((panel) => panel.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(subtabId + "-panel").classList.add("active");
+      });
+    });
+
+    createReadymadeTourBtn.addEventListener("click", () => {
+      tourCreationType = "readymade";
+      openTourModal();
+    });
+
+    createCustomTourBtn.addEventListener("click", () => {
+      tourCreationType = "custom";
+      openTourModal();
     });
 
     driverFilter.addEventListener("change", renderDriversTable);
@@ -1476,6 +1710,8 @@
     }
 
     function openTourModal() {
+      const tourDialogTitle = document.getElementById("tourDialogTitle");
+      tourDialogTitle.textContent = tourCreationType === "readymade" ? "Create Ready-Made Tour" : "Create Custom Tour";
       tourModal.classList.add("open");
       tourModal.setAttribute("aria-hidden", "false");
       tourTitle.focus();
@@ -1584,7 +1820,6 @@
     openDriverModalBtn.addEventListener("click", openDriverModal);
     closeDriverModalBtn.addEventListener("click", closeDriverModal);
     cancelDriverModalBtn.addEventListener("click", closeDriverModal);
-    addTourBtn.addEventListener("click", openTourModal);
     closeTourModalBtn.addEventListener("click", closeTourModal);
     cancelTourModalBtn.addEventListener("click", closeTourModal);
     addDayBtn.addEventListener("click", () => {
@@ -1673,6 +1908,10 @@
       if (event.key === "Escape" && tourModal.classList.contains("open")) {
         closeTourModal();
       }
+
+      if (event.key === "Escape" && tourDetailModal.classList.contains("open")) {
+        closeTourDetailModal();
+      }
     });
 
     groupForm.addEventListener("submit", (event) => {
@@ -1746,15 +1985,19 @@
         return;
       }
 
-      tours.push({
+      const newTour = {
+        id: "TR-" + String(nextTourId).padStart(3, "0"),
         title: title,
-        time: "Ready-Made " + dayPlans.length + " Days",
+        time: tourCreationType === "readymade" ? "Ready-Made " + dayPlans.length + " Days" : "Custom " + dayPlans.length + " Days",
         status: "Ready",
-        days: dayPlans
-      });
+        days: dayPlans,
+        type: tourCreationType
+      };
+      nextTourId++;
+      tours.push(newTour);
 
       renderToursList();
-      showTourDetails(tours.length - 1);
+      showTourDetails(tours.length - 1, tourCreationType);
       tourStatus.textContent = "Tour created successfully.";
 
       setTimeout(() => {
@@ -1791,6 +2034,116 @@
     renderGroups();
     renderDriversTable();
     renderToursList();
+
+    const activeTourCard = document.getElementById("activeTourCard");
+    const activeTourTablePanel = document.getElementById("activeTourTablePanel");
+    const activeTourTableBody = document.getElementById("activeTourTableBody");
+    const activeTourCount = document.getElementById("activeTourCount");
+
+    function renderActiveTourTable() {
+      const activeTours = tours.filter((tour) => tour.status === "Active");
+      activeTourCount.textContent = String(activeTours.length);
+
+      if (activeTours.length === 0) {
+        activeTourTableBody.innerHTML = "<tr><td class='empty-text' colspan='5'>No active tours.</td></tr>";
+        return;
+      }
+
+      activeTourTableBody.innerHTML = activeTours.map((tour, index) => {
+        const tourIndex = tours.findIndex(t => t.id === tour.id);
+        return `
+          <tr style="cursor: pointer;" class="tour-row" data-tour-index="${tourIndex}">
+            <td>${escapeHtml(tour.id)}</td>
+            <td>${escapeHtml(tour.title)}</td>
+            <td><span class="status ok">${escapeHtml(tour.status)}</span></td>
+            <td>${escapeHtml(tour.time)}</td>
+            <td>${tour.days}</td>
+          </tr>
+        `;
+      }).join("");
+
+      attachTourRowClickHandlers();
+    }
+
+    function openTourDetailModal(tourIndex) {
+      const tour = tours[tourIndex];
+      if (!tour) return;
+
+      document.getElementById("tourDetailId").value = tour.id || "";
+      document.getElementById("tourDetailTitle").value = tour.title || "";
+      document.getElementById("tourDetailStatusSelect").value = tour.status || "Active";
+      document.getElementById("tourDetailTime").value = tour.time || "";
+      document.getElementById("tourDetailDays").value = tour.days || 1;
+
+      tourDetailModal.dataset.editingIndex = String(tourIndex);
+      tourDetailModal.classList.add("open");
+      tourDetailModal.setAttribute("aria-hidden", "false");
+      document.getElementById("tourDetailTitle").focus();
+    }
+
+    function closeTourDetailModal() {
+      tourDetailModal.classList.remove("open");
+      tourDetailModal.setAttribute("aria-hidden", "true");
+      tourDetailForm.reset();
+      tourDetailStatusMsg.textContent = "";
+      tourDetailModal.dataset.editingIndex = "";
+    }
+
+    function attachTourRowClickHandlers() {
+      const tourRows = document.querySelectorAll(".tour-row");
+      tourRows.forEach((row) => {
+        row.addEventListener("click", () => {
+          const index = Number(row.dataset.tourIndex);
+          openTourDetailModal(index);
+        });
+      });
+    }
+
+    closeTourDetailModalBtn.addEventListener("click", closeTourDetailModal);
+    cancelTourDetailModalBtn.addEventListener("click", closeTourDetailModal);
+
+    tourDetailModal.addEventListener("click", (event) => {
+      if (event.target === tourDetailModal) {
+        closeTourDetailModal();
+      }
+    });
+
+    tourDetailForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const tourIndex = Number(tourDetailModal.dataset.editingIndex);
+      if (isNaN(tourIndex) || !tours[tourIndex]) {
+        tourDetailStatusMsg.textContent = "Error: Tour not found.";
+        return;
+      }
+
+      const updatedTitle = document.getElementById("tourDetailTitle").value.trim();
+      if (!updatedTitle) {
+        tourDetailStatusMsg.textContent = "Please enter a tour title.";
+        return;
+      }
+
+      tours[tourIndex].title = updatedTitle;
+      tours[tourIndex].status = document.getElementById("tourDetailStatus").value;
+      tours[tourIndex].time = document.getElementById("tourDetailTime").value.trim();
+      tours[tourIndex].days = Number(document.getElementById("tourDetailDays").value);
+
+      tourDetailStatusMsg.textContent = "Tour updated successfully!";
+      renderActiveTourTable();
+
+      setTimeout(() => {
+        closeTourDetailModal();
+      }, 800);
+    });
+
+    activeTourCard.addEventListener("click", () => {
+      const isVisible = activeTourTablePanel.style.display !== "none";
+      activeTourTablePanel.style.display = isVisible ? "none" : "block";
+      if (!isVisible) {
+        renderActiveTourTable();
+      }
+    });
+
+    renderActiveTourTable();
   </script>
 </body>
 </html>

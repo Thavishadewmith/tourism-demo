@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TourPilot - Login or Register</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f8f6;
+      --panel: #ffffff;
+      --ink: #111a17;
+      --muted: #5c6b65;
+      --line: #d7e2dc;
+      --green: #1f8f58;
+      --green-dark: #156a41;
+      --green-soft: #e4f5ec;
+      --radius-xl: 28px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow: 0 24px 40px rgba(18, 40, 29, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Manrope", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(31, 143, 88, 0.12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(17, 26, 23, 0.08), transparent 26%),
+        var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .hero {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-family: "Syne", sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-size: 1.1rem;
+    }
+
+    .brand span {
+      color: var(--green);
+    }
+
+    .top-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .top-links a {
+      color: #22312b;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .top-btn {
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #1f2937;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-btn.primary {
+      border: 0;
+      background: var(--green);
+      color: #fff;
+    }
+
+    .top-btn.primary:hover {
+      background: var(--green-dark);
+    }
+
+    .hero-card {
+      flex: 1;
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(140deg, rgba(10, 18, 16, 0.78), rgba(10, 18, 16, 0.42)),
+        url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80") center/cover;
+      color: #fff;
+      display: flex;
+      align-items: flex-end;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      min-height: 520px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.12) 50%, transparent 75%);
+      transform: translateX(-120%);
+      animation: sheen 6.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sheen {
+      0% { transform: translateX(-120%); }
+      45%, 100% { transform: translateX(140%); }
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 42rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .hero-copy h1 {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+    }
+
+    .hero-copy p {
+      font-size: 0.98rem;
+      line-height: 1.7;
+      max-width: 58ch;
+      color: rgba(255, 255, 255, 0.92);
+      margin-bottom: 18px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      font-size: 0.76rem;
+      font-weight: 800;
+      backdrop-filter: blur(3px);
+    }
+
+    .panel {
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-shell {
+      width: min(520px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .auth-head {
+      margin-bottom: 16px;
+    }
+
+    .auth-head h2 {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .auth-head p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 18px;
+      background: #eef3f1;
+      padding: 6px;
+      border-radius: 14px;
+    }
+
+    .tabbtn {
+      border: 0;
+      background: transparent;
+      min-height: 42px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #415049;
+    }
+
+    .tabbtn.active {
+      background: #fff;
+      color: var(--green-dark);
+      box-shadow: 0 6px 14px rgba(15, 39, 29, 0.06);
+    }
+
+    .form-panel {
+      display: none;
+      animation: fadeIn 180ms ease;
+    }
+
+    .form-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #344054;
+    }
+
+    .input,
+    .select {
+      min-height: 44px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 0.93rem;
+      outline: 0;
+      background: #fff;
+      color: #0f172a;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(31, 143, 88, 0.12);
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .prefix {
+      min-width: 56px;
+      padding: 0 12px;
+      min-height: 44px;
+      display: grid;
+      place-items: center;
+      background: #f4faf7;
+      color: #415049;
+      font-size: 0.86rem;
+      font-weight: 800;
+      border-right: 1px solid var(--line);
+    }
+
+    .input-group .input {
+      border: 0;
+      border-radius: 0;
+      min-height: 44px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      min-height: 44px;
+      padding: 0 16px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .btn.primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn.primary:hover {
+      background: var(--green-dark);
+    }
+
+    .btn.ghost {
+      background: #eef3f1;
+      color: #1f2937;
+    }
+
+    .helper {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .status {
+      min-height: 18px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .status.ok {
+      color: #156a41;
+    }
+
+    .status.err {
+      color: #b42318;
+    }
+
+    .quick-note {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #f5fbf7;
+      border: 1px solid #dcebe2;
+      color: #40504a;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .quick-note strong {
+      color: #1f2937;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .hero-card {
+        min-height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="topbar">
+        <p class="brand">Tour<span>Pilot</span></p>
+        <div class="top-links">
+          <a href="tourism-landing (1).html">Home</a>
+          <a href="agentdashboard.html">Agent</a>
+          <a href="driverdashboard.html">Driver</a>
+          <a class="top-btn primary" href="tourism-landing (1).html">Back to Site</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-copy">
+          <span class="eyebrow">Secure Access</span>
+          <h1>Create an account or log in with your phone number.</h1>
+          <p>Your phone number is the unique account ID. When you log in, the system recognizes your account type automatically and sends you to the correct dashboard.</p>
+          <div class="pill-row">
+            <span class="pill">Unique phone account</span>
+            <span class="pill">OTP verification</span>
+            <span class="pill">Auto role routing</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="auth-shell">
+        <div class="auth-head">
+          <h2>Login or Register</h2>
+          <p>Use the same page to create a new account or sign in to an existing one.</p>
+        </div>
+
+        <div class="tabbar" role="tablist" aria-label="Account access tabs">
+          <button class="tabbtn active" id="loginTab" type="button" role="tab" aria-selected="true">Login</button>
+          <button class="tabbtn" id="registerTab" type="button" role="tab" aria-selected="false">Register</button>
+        </div>
+
+        <div class="form-panel active" id="loginPanel">
+          <form id="loginForm" novalidate>
+            <div class="field">
+              <label for="loginPhone">Phone Number</label>
+              <div class="input-group">
+                <span class="prefix">+94</span>
+                <input id="loginPhone" class="input" type="tel" maxlength="10" inputmode="numeric" placeholder="77 123 4567" autocomplete="tel" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="loginOtp">OTP</label>
+              <input id="loginOtp" class="input" type="password" maxlength="6" inputmode="numeric" placeholder="Enter 6-digit OTP" autocomplete="one-time-code" required>
+            </div>
+
+            <div class="actions">
+              <button class="btn ghost" id="sendLoginOtp" type="button">Send OTP</button>
+              <button class="btn primary" type="submit" id="loginSubmit" disabled>Login</button>
+            </div>
+            <p class="helper">Login uses the phone number already saved in the system. The account type is read from that record.</p>
+            <p class="status" id="loginStatus" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="form-panel" id="registerPanel">
+          <form id="registerForm" novalidate>
+            <div class="field">
+              <label for="registerName">Full Name</label>
+              <input id="registerName" class="input" type="text" placeholder="Your name" required>
+            </div>
+
+            <div class="field">
+              <label for="registerPhone">Phone Number</label>
+              <div class="input-group">
+                <span class="prefix">+94</span>
+                <input id="registerPhone" class="input" type="tel" maxlength="10" inputmode="numeric" placeholder="77 123 4567" autocomplete="tel" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="registerType">Account Type</label>
+              <select id="registerType" class="select" required>
+                <option value="" selected disabled>Select account type</option>
+                <option value="agent">agent</option>
+                <option value="driver">driver</option>
+                <option value="traveler">traveler</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="registerOtp">OTP</label>
+              <input id="registerOtp" class="input" type="password" maxlength="6" inputmode="numeric" placeholder="Enter 6-digit OTP" autocomplete="one-time-code" required>
+            </div>
+
+            <div class="actions">
+              <button class="btn ghost" id="sendRegisterOtp" type="button">Send OTP</button>
+              <button class="btn primary" type="submit" id="registerSubmit" disabled>Create Account</button>
+            </div>
+            <p class="helper">Register once per phone number. After verification, the account type is stored and used for routing.</p>
+            <p class="status" id="registerStatus" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="quick-note">
+          <strong>Demo note:</strong> the backend returns the OTP in the response for local testing. After login or registration, the app redirects to the matching dashboard.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "http://localhost:4000";
+
+    const loginTab = document.getElementById("loginTab");
+    const registerTab = document.getElementById("registerTab");
+    const loginPanel = document.getElementById("loginPanel");
+    const registerPanel = document.getElementById("registerPanel");
+
+    const loginForm = document.getElementById("loginForm");
+    const loginPhone = document.getElementById("loginPhone");
+    const loginOtp = document.getElementById("loginOtp");
+    const sendLoginOtp = document.getElementById("sendLoginOtp");
+    const loginSubmit = document.getElementById("loginSubmit");
+    const loginStatus = document.getElementById("loginStatus");
+
+    const registerForm = document.getElementById("registerForm");
+    const registerName = document.getElementById("registerName");
+    const registerPhone = document.getElementById("registerPhone");
+    const registerType = document.getElementById("registerType");
+    const registerOtp = document.getElementById("registerOtp");
+    const sendRegisterOtp = document.getElementById("sendRegisterOtp");
+    const registerSubmit = document.getElementById("registerSubmit");
+    const registerStatus = document.getElementById("registerStatus");
+
+    let loginOtpToken = "";
+    let registerOtpToken = "";
+    let loginVerifiedOtp = "";
+    let registerVerifiedOtp = "";
+
+    function setStatus(target, message, kind) {
+      target.textContent = message;
+      target.classList.remove("ok", "err");
+      if (kind) {
+        target.classList.add(kind);
+      }
+    }
+
+    function digitsOnly(value) {
+      return String(value || "").replace(/\D/g, "");
+    }
+
+    function switchTab(mode) {
+      const loginActive = mode === "login";
+      loginTab.classList.toggle("active", loginActive);
+      registerTab.classList.toggle("active", !loginActive);
+      loginTab.setAttribute("aria-selected", String(loginActive));
+      registerTab.setAttribute("aria-selected", String(!loginActive));
+      loginPanel.classList.toggle("active", loginActive);
+      registerPanel.classList.toggle("active", !loginActive);
+    }
+
+    async function fetchJson(url, options) {
+      const response = await fetch(url, options);
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error || "Request failed");
+      }
+      return payload;
+    }
+
+    loginTab.addEventListener("click", () => switchTab("login"));
+    registerTab.addEventListener("click", () => switchTab("register"));
+
+    sendLoginOtp.addEventListener("click", async () => {
+      const phone = digitsOnly(loginPhone.value);
+      loginPhone.value = phone;
+
+      if (phone.length !== 10) {
+        setStatus(loginStatus, "Enter a valid 10-digit phone number.", "err");
+        return;
+      }
+
+      try {
+        setStatus(loginStatus, "Sending OTP...", "");
+        const result = await fetchJson(`${API_BASE}/api/auth/send-otp`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone })
+        });
+
+        loginOtpToken = result.otpToken;
+        loginVerifiedOtp = result.otp;
+        loginSubmit.disabled = false;
+        setStatus(loginStatus, `OTP sent. Demo OTP: ${result.otp}. Account type: ${result.accountType}.`, "ok");
+        loginOtp.focus();
+      } catch (error) {
+        setStatus(loginStatus, error.message, "err");
+      }
+    });
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const phone = digitsOnly(loginPhone.value);
+      const otp = digitsOnly(loginOtp.value);
+      loginPhone.value = phone;
+      loginOtp.value = otp;
+
+      if (!loginOtpToken) {
+        setStatus(loginStatus, "Send OTP first.", "err");
+        return;
+      }
+
+      if (otp.length !== 6) {
+        setStatus(loginStatus, "Enter the 6-digit OTP.", "err");
+        return;
+      }
+
+      if (otp !== loginVerifiedOtp) {
+        setStatus(loginStatus, "Incorrect OTP.", "err");
+        return;
+      }
+
+      try {
+        setStatus(loginStatus, "Verifying login...", "");
+        const result = await fetchJson(`${API_BASE}/api/auth/verify-otp`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, otp, otpToken: loginOtpToken })
+        });
+
+        setStatus(loginStatus, `Login successful. Redirecting as ${result.account.accountType}...`, "ok");
+        localStorage.setItem("tourpilotAuthToken", result.token);
+        setTimeout(() => {
+          window.location.href = result.redirectTo;
+        }, 600);
+      } catch (error) {
+        setStatus(loginStatus, error.message, "err");
+      }
+    });
+
+    sendRegisterOtp.addEventListener("click", async () => {
+      const phone = digitsOnly(registerPhone.value);
+      registerPhone.value = phone;
+
+      if (!registerName.value.trim()) {
+        setStatus(registerStatus, "Enter your name first.", "err");
+        return;
+      }
+
+      if (phone.length !== 10) {
+        setStatus(registerStatus, "Enter a valid 10-digit phone number.", "err");
+        return;
+      }
+
+      if (!registerType.value) {
+        setStatus(registerStatus, "Select an account type.", "err");
+        return;
+      }
+
+      try {
+        setStatus(registerStatus, "Sending registration OTP...", "");
+        const result = await fetchJson(`${API_BASE}/api/auth/register-request`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: registerName.value.trim(),
+            phone,
+            accountType: registerType.value
+          })
+        });
+
+        registerOtpToken = result.otpToken;
+        registerVerifiedOtp = result.otp;
+        registerSubmit.disabled = false;
+        setStatus(registerStatus, `OTP sent. Demo OTP: ${result.otp}.`, "ok");
+        registerOtp.focus();
+      } catch (error) {
+        setStatus(registerStatus, error.message, "err");
+      }
+    });
+
+    registerForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const phone = digitsOnly(registerPhone.value);
+      const otp = digitsOnly(registerOtp.value);
+      registerPhone.value = phone;
+      registerOtp.value = otp;
+
+      if (!registerOtpToken) {
+        setStatus(registerStatus, "Send OTP first.", "err");
+        return;
+      }
+
+      if (otp.length !== 6) {
+        setStatus(registerStatus, "Enter the 6-digit OTP.", "err");
+        return;
+      }
+
+      if (otp !== registerVerifiedOtp) {
+        setStatus(registerStatus, "Incorrect OTP.", "err");
+        return;
+      }
+
+      try {
+        setStatus(registerStatus, "Creating account...", "");
+        const result = await fetchJson(`${API_BASE}/api/auth/verify-registration`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, otp, otpToken: registerOtpToken })
+        });
+
+        setStatus(registerStatus, `Account created. Redirecting as ${result.account.accountType}...`, "ok");
+        localStorage.setItem("tourpilotAuthToken", result.token);
+        setTimeout(() => {
+          window.location.href = result.redirectTo;
+        }, 650);
+      } catch (error) {
+        setStatus(registerStatus, error.message, "err");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{
+  "accounts": [
+    {
+      "id": "acc_1",
+      "name": "Asha Perera",
+      "phone": "0771234567",
+      "accountType": "agent",
+      "createdAt": "2026-04-12T00:00:00.000Z"
+    },
+    {
+      "id": "acc_2",
+      "name": "Nimal Perera",
+      "phone": "0772459032",
+      "accountType": "driver",
+      "createdAt": "2026-04-12T00:00:00.000Z"
+    },
+    {
+      "id": "acc_6d170b54",
+      "name": "Test Agent",
+      "phone": "0777001122",
+      "accountType": "agent",
+      "createdAt": "2026-04-12T11:22:52.884Z"
+    }
+  ],
+  "entities": [],
+  "drivers": [
+    {
+      "id": "drv_1",
+      "name": "Nimal Perera",
+      "license": "B321-9845",
+      "phone": "+94 77 245 9032",
+      "vehicle": "Toyota KDH",
+      "status": "Available"
+    },
+    {
+      "id": "drv_2",
+      "name": "Sahan Dilshan",
+      "license": "C446-7703",
+      "phone": "+94 71 889 1450",
+      "vehicle": "Nissan Caravan",
+      "status": "On Tour"
+    },
+    {
+      "id": "drv_3",
+      "name": "Ruwan Jayasuriya",
+      "license": "B886-2144",
+      "phone": "+94 76 563 0091",
+      "vehicle": "Suzuki Every",
+      "status": "Available"
+    }
+  ],
+  "tours": [],
+  "groups": []
+}
